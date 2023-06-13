@@ -1,24 +1,54 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { Routes, Route, useNavigate } from "react-router-dom";
+import { Home, Login } from "./components";
+import React, { useEffect, useState } from "react";
+import { app } from "./config/firebase.config";
+import { getAuth } from "firebase/auth";
+import { AnimatePresence } from "framer-motion";
+import { validateUser } from "./api";
+import { useStateValue } from "./context/StateProvider";
+import { actionType } from "./context/reducer";
 
 function App() {
+  const [{ user }, dispatch] = useStateValue();
+  const [auth, setAuth] = useState(
+    false || window.localStorage.getItem("auth") === "true"
+  );
+
+  const navigate = useNavigate();
+
+  const firebaseAuth = getAuth(app);
+
+  useEffect(() => {
+    firebaseAuth.onAuthStateChanged((userCreds) => {
+      if (userCreds) {
+        userCreds.getIdToken().then((token) => {
+          console.log(token);
+          validateUser(token).then((data) => {
+            dispatch({
+              type: actionType.SET_USER,
+              user: data,
+            });
+          });
+        });
+      } else {
+        setAuth(false);
+        window.localStorage.setItem("auth", "false");
+        navigate("/login");
+      }
+    });
+    if ("true" !== window.localStorage.getItem("auth")) navigate("/login");
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <AnimatePresence mode="wait">
+      <div className="h-auto min-w-[680px] bg-primary flex justify-center items-center">
+        <Routes>
+          <Route path="/login" element={<Login setAuth={setAuth} />}></Route>
+          <Route path="/*" element={<Home />}></Route>
+        </Routes>
+      </div>
+    </AnimatePresence>
   );
 }
 
