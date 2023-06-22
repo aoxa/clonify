@@ -1,6 +1,6 @@
 import "./App.css";
 import { Routes, Route, useNavigate } from "react-router-dom";
-import { Home, Login } from "./components";
+import { Home, Login, Dashboard } from "./components";
 import React, { useEffect, useState } from "react";
 import { app } from "./config/firebase.config";
 import { getAuth } from "firebase/auth";
@@ -23,7 +23,6 @@ function App() {
     firebaseAuth.onAuthStateChanged((userCreds) => {
       if (userCreds) {
         userCreds.getIdToken().then((token) => {
-          console.log(token);
           validateUser(token).then((data) => {
             dispatch({
               type: actionType.SET_USER,
@@ -34,6 +33,10 @@ function App() {
       } else {
         setAuth(false);
         window.localStorage.setItem("auth", "false");
+        dispatch({
+          type: actionType.SET_USER,
+          user: null,
+        });
         navigate("/login");
       }
     });
@@ -45,6 +48,7 @@ function App() {
       <div className="h-auto min-w-[680px] bg-primary flex justify-center items-center">
         <Routes>
           <Route path="/login" element={<Login setAuth={setAuth} />}></Route>
+          <Route path="/dashboard/*" element={<Dashboard />}></Route>
           <Route path="/*" element={<Home />}></Route>
         </Routes>
       </div>

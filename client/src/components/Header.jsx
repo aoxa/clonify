@@ -5,13 +5,17 @@ import {FaCrown} from 'react-icons/fa'
 import { isActiveStyles, isNotActiveStyles } from '../utils/styles'
 import { useStateValue } from '../context/StateProvider'
 import { motion } from 'framer-motion'
+import { app } from '../config/firebase.config'
+import { getAuth } from 'firebase/auth'
 
 const Header = () => {
     const [{user}, dispatch] = useStateValue()
     const [showMenu, setShowMenu] = useState(false)
 
+    const firebaseAuth = getAuth(app);
     const navigate = useNavigate()
     const logout = () => {
+        firebaseAuth.signOut().then(()=> window.localStorage.setItem('auth', 'false'))
         window.localStorage.clear()
         navigate('/login', {replace: true})
     }
@@ -48,6 +52,14 @@ const Header = () => {
                         <p className='text-base text-textColor hover:font-semibold duration-150 transition-all ease-in-out'>Favorites</p>
                     </NavLink>
                     <hr />
+
+                    { user?.user?.role === 'admin' && (
+                        <>
+                            <NavLink to={'/dashboard/home'}>
+                            <p className='text-base text-textColor hover:font-semibold duration-150 transition-all ease-in-out'>Dashboard</p>
+                            </NavLink>
+                        </>
+                    )}
                     
                     <p className='text-base text-textColor hover:font-semibold duration-150 transition-all ease-in-out' onClick={logout}>Sign Out</p>
                     

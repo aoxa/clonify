@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom'
 import { validateUser } from '../api'
 import { useStateValue } from '../context/StateProvider'
 import { actionType } from '../context/reducer'
+import { LoginBg } from '../assets/video'
 
 const Login = ({setAuth}) => {
   const firebaseAuth = getAuth(app)
@@ -46,6 +47,12 @@ const Login = ({setAuth}) => {
 
   return (
     <div className='relative h-screen w-screen'>
+      <video src={LoginBg}
+        type='video/mp4'
+        autoPlay
+        muted
+        loop 
+        className='w-full h-full'/>
         <div className='absolute inset-0 bg-darkOverlay flex items-center justify-center p-4'>
             <div className='w-full md:w-375 p-4 bg-lightOverlay shadow-2xl rounded-md backdrop-blur-md flex justify-center'>
                 <div className='flex items-center justify-center gap-2 px-4 py-2 rounded-md
