@@ -3,8 +3,14 @@ const router = require("express").Router();
 const Song = require("../models/song");
 
 router.get("/", async (req, res) => {
-  songs = await Song.find();
+  const songs = await Song.find();
   return res.status(200).json(songs);
+});
+
+router.get("/:id", async (req, res) => {
+  const song = await Song.findById(req.params.id);
+
+  return res.status(200).json(song);
 });
 
 router.post("/", async (req, res) => {
@@ -25,7 +31,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.put("/:id", (req, res) => {
+router.put("/:id", async (req, res) => {
   const options = {
     upsert: true,
     new: true,
@@ -34,7 +40,7 @@ router.put("/:id", (req, res) => {
     _id: req.params.id,
   };
 
-  const song = Song.findOneAndUpdate(
+  const song = await Song.findOneAndUpdate(
     filter,
     {
       name: req.body.name,
@@ -47,6 +53,13 @@ router.put("/:id", (req, res) => {
     },
     options
   );
+  return res.status(200).json(song);
+});
+
+router.delete("/:id", async (req, res) => {
+  const result = await Song.deleteOne({ _id: req.params.id });
+
+  return res.status(200).json({ success: true, result });
 });
 
 module.exports = router;
