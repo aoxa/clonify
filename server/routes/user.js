@@ -3,7 +3,7 @@ const admin = require("../config/firebase.config");
 const router = require("express").Router();
 const User = require("../models/user");
 
-router.get("/auth", async (req, res) => {
+const validateToken = async (req, res, next) => {
   if (!req.headers.authorization) {
     return res.status(404).send();
   }
@@ -15,11 +15,38 @@ router.get("/auth", async (req, res) => {
   }
 
   const token = authorization[1];
-  try {
-    const decoded = await admin.auth().verifyIdToken(token);
-    if (!decoded) {
-      return res.status(400).send(err);
+
+  const decoded = await admin.auth().verifyIdToken(token);
+  
+  if (!decoded) {
+    return res.status(400).send(err);
+  }
+
+  req.decoded = decoded;
+
+  next();
+}
+
+router.get("/", validateToken, async (req, res) => {
+  const options = {
+    sort: {
+      createdAt: 1
     }
+  }
+  const users = await User.find(options)
+  
+  if( users ) {
+    return res.status(200).json({success: true, data: users})
+  }
+  
+  return res.status(400).json({success: false, msg: 'No data found'});
+})
+
+
+router.get("/auth", validateToken, async (req, res) => {
+  
+  try {
+    decoded = req.decoded;
 
     const userExists = await User.findOne({ user_id: decoded.user_id });
     if (!userExists) {

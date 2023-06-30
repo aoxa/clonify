@@ -28,6 +28,7 @@ function App() {
               type: actionType.SET_USER,
               user: data,
             });
+            window.localStorage.setItem("token", token)
           });
         });
       } else {
@@ -37,6 +38,7 @@ function App() {
           type: actionType.SET_USER,
           user: null,
         });
+        window.localStorage.setItem("token", null)
         navigate("/login");
       }
     });

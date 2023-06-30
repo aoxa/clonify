@@ -26,6 +26,7 @@ const Login = ({setAuth}) => {
               type: actionType.SET_USER,
               user: data,
             })
+            window.localStorage.setItem("token", token)
           })
         }))
         window.localStorage.setItem('auth', 'true')
@@ -36,6 +37,7 @@ const Login = ({setAuth}) => {
           type: actionType.SET_USER,
           user: null,
         })
+        window.localStorage.setItem("token", null)
         window.localStorage.setItem('auth', 'false')
       }
     })

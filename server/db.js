@@ -1,12 +1,15 @@
 const mongoose = require('mongoose')
+require('dotenv').config()
 
 module.exports = async () => {
-    const username = process.env.DATABASE_USER || 'root'
-    const password = process.env.DATABASE_PASSWORD || 'password'
-    const databaseName = 'mydb';
+    const db = process.env.DB || 'mydb'
+    const username = process.env.DB_USER || 'root'
+    const password = process.env.DB_PASS || 'password'
+    const dbLocation = process.env.DB_URL || 'localhost:27017'
+    
 
     // Construct the connection URL with credentials
-    const connectionURL = process.env.DB || `mongodb://${username}:${password}@localhost:27017/${databaseName}`;
+    const connectionURL = process.env.DB_FULL || `mongodb://${username}:${password}@${dbLocation}/${db}`;
 
     try {
         await mongoose.connect(connectionURL, {
