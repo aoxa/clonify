@@ -4,7 +4,7 @@ import Header from './Header'
 import { isActiveStyles, isNotActiveStyles } from '../utils/styles'
 import {IoHome} from "react-icons/io5"
 import { NavLink, Routes, Route } from 'react-router-dom'
-import { DashboardArtists, DashboardHome, DashboardAlbums, DashboardSongs } from '.'
+import { DashboardArtists, DashboardHome, DashboardAlbums, DashboardSongs, DashboadUsers } from '.'
 
 const Dashboard = () => {
     return (
@@ -21,7 +21,7 @@ const Dashboard = () => {
         <div className='my-4 w-full p-4'>
             <Routes>
                 <Route path='/home' element={<DashboardHome />} />
-                <Route path='/users' element={<DashboardHome />} />
+                <Route path='/users' element={<DashboadUsers />} />
                 <Route path='/artists' element={<DashboardArtists />} />
                 <Route path='/albums' element={<DashboardAlbums />} />
                 <Route path='/songs' element={<DashboardSongs />} />

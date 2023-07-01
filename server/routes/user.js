@@ -16,35 +16,37 @@ const validateToken = async (req, res, next) => {
 
   const token = authorization[1];
 
-  const decoded = await admin.auth().verifyIdToken(token);
-  
-  if (!decoded) {
-    return res.status(400).send(err);
+  try {
+    const decoded = await admin.auth().verifyIdToken(token);
+
+    if (!decoded) {
+      return res.status(401).send({ success: false });
+    }
+
+    req.decoded = decoded;
+  } catch (err) {
+    return res.status(401).send({ success: false, error: err });
   }
 
-  req.decoded = decoded;
-
   next();
-}
+};
 
 router.get("/", validateToken, async (req, res) => {
   const options = {
     sort: {
-      createdAt: 1
-    }
-  }
-  const users = await User.find(options)
-  
-  if( users ) {
-    return res.status(200).json({success: true, data: users})
-  }
-  
-  return res.status(400).json({success: false, msg: 'No data found'});
-})
+      createdAt: 1,
+    },
+  };
+  const users = await User.find({}, null, options);
 
+  if (users) {
+    return res.status(200).json({ success: true, data: users });
+  }
+
+  return res.status(400).json({ success: false, msg: "No data found" });
+});
 
 router.get("/auth", validateToken, async (req, res) => {
-  
   try {
     decoded = req.decoded;
 

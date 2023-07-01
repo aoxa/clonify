@@ -6,3 +6,4 @@ export { default as DashboardHome } from "./dashboard/Home";
 export { default as DashboardSongs } from "./dashboard/Songs";
 export { default as DashboardArtists } from "./dashboard/Artists";
 export { default as DashboardAlbums } from "./dashboard/Albums";
+export { default as DashboadUsers } from "./dashboard/Users";
